@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {Map} from './Components/Map'
 import './App.css';
 
@@ -22,31 +23,37 @@ function addLoc(id) {
   }
 }
 
-function deleteLoc(value) {
-  let i = usersLocations.length;
-  while(i--){
-    if(usersLocations[i] && (arguments.length > 2 && usersLocations[i][id] === value)) {
-      usersLocations.splice(i,1);    
-      }
-  }
-}
+// function deleteLoc(value) {
+  // just change lat and long to null, keep id
+//   let i = usersLocations.length;
+//   while(i--){
+//     if(usersLocations[i] && (arguments.length > 2 && usersLocations[i][id] === value)) {
+//       usersLocations.splice(i,1);    
+//       }
+//   }
+// }
 
-function getLocation () {
+function getLocation() {
   if (navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(position) {
       // let latitude = position.coords.latitude;
       // let longitude = position.coords.longitude;
       usersLocations.push(position.coords);
+
     });
   }
 }
 
 function App() {
-  const coordinates = getLocation();
+  getLocation();
+  const [usersLocations, setUsersLocations] = useState(usersLocations)
+
+// figure setUsersLocations Method
 
   return (
     <div className="App">
       <Map />
+
     </div>
   );
 }
