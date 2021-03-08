@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {Map} from './Components/Map'
+import { Map } from './Components/Map'
+import { NewMap } from './Components/NewMap'
 import './App.css';
 
 let usersLocationsArr = [ 
@@ -53,7 +54,7 @@ function App() {
   return (
     <div className="App">
       <Map />
-
+      <NewMap id="map" />
     </div>
   );
 }
