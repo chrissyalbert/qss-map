@@ -28,9 +28,12 @@ d3.json(
             .selectAll("path")
             .data(data.features)
             .enter().append("path")
+            //med blue
             .attr("fill", "rgb(53,69,105)")
             .attr("d", d3.geoPath().projection(vanDerGrinten)) //projecting the paths to Van der Grinten
+            //med blue "rgb(53,69,105)"
             .style("stroke", "rgb(53,69,105)")
+            //dark blue "rgb(24,30,42)"
     }) 
 
 //draw lat long coordinates
@@ -45,8 +48,9 @@ d3.json(
             .enter().append("circle")
             .attr("r", 1)
             .attr("transform", function (d) { return "translate(" + vanDerGrinten([d.lon, d.lat]) + ")"; }) //map projection
-            .style("stroke", "#d3d3d3")
-            .style("fill", "#d3d3d3");
+            //light gray
+            .style("stroke", "rgb(240,225,196")
+            .style("fill", "rgb(240,225,196");
     }) 
 
 d3.json('https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json'
@@ -62,6 +66,7 @@ d3.json('https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40
             .selectAll("line")
             .data(delaunay.coords)
             .enter().append("line")
+            //dark blue
             .style("fill", "rgb(24,30,42)")
             .style("stroke", "rgb(24,30,42)");
     })
