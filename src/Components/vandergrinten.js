@@ -29,7 +29,7 @@ d3.json(
             .data(data.features)
             .enter().append("path")
             .attr("fill", "Black")
-            .attr("d", d3.geoPath().projection(gfg)) //projecting the paths to Van der Grinten
+            .attr("d", d3.geoPath().projection(vanDerGrinten)) //projecting the paths to Van der Grinten
             .style("stroke", "Black")
     }) 
 
@@ -52,7 +52,7 @@ d3.json(
 d3.json('https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json'
     , function (d) {
         d = d.filter(airportFilter)
-        let projectedPoints = d.map(({ lat: latitude, lon: longitude }) => gfg([longitude, latitude]))
+        let projectedPoints = d.map(({ lat: latitude, lon: longitude }) => vanDerGrinten([longitude, latitude]))
         const delaunay = Delaunator.from(pointsprojectedPoints)
         console.log(delaunay)
         let mesh = [delaunay.triangles, delaunay.halfedges]
@@ -73,7 +73,7 @@ var i;
 for (i = 0; i = 1; i++) {
     x = d[i].lon
     y = d[i].lat
-    projectedPoints.push(gfg([x, y]));
+    projectedPoints.push(vanDerGrinten([x, y]));
 }
 return projectedPoints
 */
@@ -81,7 +81,7 @@ return projectedPoints
 /*d3.json(
     'https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json'
     , function (data) {
-        var projectedPoints = gfg([data.lon, data.lat])
+        var projectedPoints = vanDerGrinten([data.lon, data.lat])
         const delaunay = Delaunator.from(projectedPoints)
         //console.log(projectedPoints)
         console.log(data.lon)
