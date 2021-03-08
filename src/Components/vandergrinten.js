@@ -49,8 +49,8 @@ d3.json(
             .attr("r", 1)
             .attr("transform", function (d) { return "translate(" + vanDerGrinten([d.lon, d.lat]) + ")"; }) //map projection
             //light gray
-            .style("stroke", "rgb(240,225,196")
-            .style("fill", "rgb(240,225,196");
+            .style("stroke", "rgb(240,225,196)")
+            .style("fill", "rgb(240,225,196)");
     }) 
 
 d3.json('https://gist.githubusercontent.com/tdreyno/4278655/raw/7b0762c09b519f40397e4c3e100b097d861f5588/airports.json'
