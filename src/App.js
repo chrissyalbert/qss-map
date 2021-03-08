@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Map} from './Components/Map'
 import './App.css';
 
-let usersLocations = [ 
+let usersLocationsArr = [ 
   {id: 0, lat: 42.360081, long: -71.058884},
   {id: 1, lat: 41.878113, long: -87.629799},
   {id: 2, lat: 33.748997, long: -84.387985},
@@ -18,7 +18,7 @@ function addLoc(id) {
     navigator.geolocation.getCurrentPosition(function(position) {
       let latitude = position.coords.latitude;
       let longitude = position.coords.longitude;
-      usersLocations.push({id, latitude, longitude});
+      usersLocationsArr.push({id, latitude, longitude});
     });
   }
 }
@@ -38,7 +38,7 @@ function getLocation() {
     navigator.geolocation.getCurrentPosition(function(position) {
       // let latitude = position.coords.latitude;
       // let longitude = position.coords.longitude;
-      usersLocations.push(position.coords);
+      usersLocationsArr.push(position.coords);
 
     });
   }
@@ -46,7 +46,7 @@ function getLocation() {
 
 function App() {
   getLocation();
-  const [usersLocations, setUsersLocations] = useState(usersLocations)
+  const [usersLocations, setUsersLocations] = useState(usersLocationsArr)
 
 // figure setUsersLocations Method
 
