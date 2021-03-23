@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import {Map} from './Components/Map'
+import Container from 'react-bootstrap/Container'
+import Nav from 'react-bootstrap/Nav'
+import image from './Assets/bg7.jpg'
 import './App.css';
 
 let usersLocationsArr = [ 
@@ -39,7 +42,7 @@ function getLocation() {
       // let latitude = position.coords.latitude;
       // let longitude = position.coords.longitude;
       usersLocationsArr.push(position.coords);
-
+      console.log('usersLocationsArr: ', usersLocationsArr)
     });
   }
 }
@@ -49,12 +52,40 @@ function App() {
   const [usersLocations, setUsersLocations] = useState(usersLocationsArr)
 
 // figure setUsersLocations Method
-
+// <Map />
   return (
-    <div className="App">
-      <Map />
-
+    <div className="landing" >
+      <Container className="App d-flex h-100 mx-auto flex-column">
+      <header className="masthead mb-auto">
+        <div className="inner">
+          <h3 className="masthead-brand text-light">Light the World</h3>
+          <Nav className="justify-space-between" activeKey="/home" >
+            <Nav.Item>
+              <Nav.Link href="/home">Home</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+            <Nav.Link eventKey="disabled" disabled>
+              Disabled
+            </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+            <Nav.Link eventKey="disabled" disabled>
+              Disabled
+            </Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </div>
+      </header>
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading">Unleash your Light</h1>
+        <p class="lead">Click "Allow Location Access" at the prompt from your browser so that your light can be seen by all our community.</p>
+        <p class="lead">
+          
+        </p>
+      </main>
+    </Container>
     </div>
+      
   );
 }
 
