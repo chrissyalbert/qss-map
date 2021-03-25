@@ -1,87 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Map} from './Components/Map'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
-import image from './Assets/bg7.jpg'
+import Button from 'react-bootstrap/Button'
 import './App.css';
-
-let usersLocationsArr = [ 
-  {id: 0, lat: 42.360081, long: -71.058884},
-  {id: 1, lat: 41.878113, long: -87.629799},
-  {id: 2, lat: 33.748997, long: -84.387985},
-  {id: 3, lat: 39.739235, long: -104.990250},
-  {id: 4, lat: 33.448376, long: -112.074036},
-  {id: 5, lat: 58.301945, long: -134.419724},
-  {id: 6, lat: 47.606209, long: -122.332069},
-  {id: 7, lat: 21.306944, long: -157.858337}
- ]
-
-function addLoc(id) {
-  if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let latitude = position.coords.latitude;
-      let longitude = position.coords.longitude;
-      usersLocationsArr.push({id, latitude, longitude});
-    });
-  }
-}
-
-// function deleteLoc(value) {
-  // just change lat and long to null, keep id
-//   let i = usersLocations.length;
-//   while(i--){
-//     if(usersLocations[i] && (arguments.length > 2 && usersLocations[i][id] === value)) {
-//       usersLocations.splice(i,1);    
-//       }
-//   }
-// }
 
 function getLocation() {
   if (navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(position) {
-      // let latitude = position.coords.latitude;
-      // let longitude = position.coords.longitude;
-      usersLocationsArr.push(position.coords);
-      console.log('usersLocationsArr: ', usersLocationsArr)
+      postToSheet(position.coords)
     });
   }
 }
 
+function postToSheet(coordinates) {
+  // other elements: , accuracy, altitudeAccuracy, heading, speed
+  const { latitude, longitude, altitude } = coordinates
+  
+  const data = {
+    latitude,
+    longitude,
+    altitude,
+    created: new Date(),
+  }
+  // GeolocationCoordinates { latitude: 33.7227231111664, longitude: -111.9814122972247, altitude: 536.8526000976562, accuracy: 65, altitudeAccuracy: 10, heading: null, speed: null 
+  // };
+  console.log('coordinates: ', coordinates)
+  //     https://sheet.best/api/sheets/4c086f74-07ab-4df1-9f49-deca951cf937
+  fetch("https://sheet.best/api/sheets/4c086f74-07ab-4df1-9f49-deca951cf937", {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+})
+  .then((r) => r.json())
+  .then((response) => {
+    // The response comes here
+    console.log(response);
+  })
+  .catch((error) => {
+    // Errors are reported there
+    console.log(error);
+  });
+}
+
+// const [usersLocations, setUsersLocations] = useState(usersLocationsArr)
 function App() {
   getLocation();
-  const [usersLocations, setUsersLocations] = useState(usersLocationsArr)
+  const [usersLocations, setUsersLocations] = useState([])
+  function getUsersLocations() {
+    return fetch("https://sheet.best/api/sheets/4c086f74-07ab-4df1-9f49-deca951cf937")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      setUsersLocations(data)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+  const [isLoading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    if (isLoading) {
+      getUsersLocations().then(() => {
+        setLoading(false);
+      });
+    }
+  }, [isLoading]);
 
-// figure setUsersLocations Method
+  const handleLoadClick = () => setLoading(true);
+  const handleClearClick = () => setUsersLocations([true]);
 // <Map />
+//  <Nav className="justify-space-between" activeKey="/home" >
+{/* <Nav.Item>
+<Nav.Link href="/home">Home</Nav.Link>
+</Nav.Item>
+<Nav.Item>
+<Nav.Link eventKey="disabled" disabled>
+Disabled
+</Nav.Link>
+</Nav.Item>
+</Nav> */}
   return (
     <div className="landing" >
       <Container className="App d-flex h-100 mx-auto flex-column">
       <header className="masthead mb-auto">
         <div className="inner">
           <h3 className="masthead-brand text-light">Light the World</h3>
-          <Nav className="justify-space-between" activeKey="/home" >
-            <Nav.Item>
-              <Nav.Link href="/home">Home</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-            <Nav.Link eventKey="disabled" disabled>
-              Disabled
-            </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-            <Nav.Link eventKey="disabled" disabled>
-              Disabled
-            </Nav.Link>
-            </Nav.Item>
-          </Nav>
+         
         </div>
       </header>
-      <main role="main" class="inner cover">
-        <h1 class="cover-heading">Unleash your Light</h1>
-        <p class="lead">Click "Allow Location Access" at the prompt from your browser so that your light can be seen by all our community.</p>
-        <p class="lead">
-          
-        </p>
+      <main role="main" className="inner cover">
+        <h1 className="cover-heading">Unleash your Light</h1>
+        <p className="lead">Click "Allow Location Access" at the prompt from your browser so that your light can be seen by all our community.</p>
+        
+        <Button
+          variant="light"
+          disabled={isLoading}
+          onClick={!isLoading ? handleLoadClick : null}
+        >
+      {isLoading ? 'Loading…' : 'Show Locations'}
+      </Button>
+      <Button variant="light" onClick={handleClearClick} >Clear Locations</Button>
+      {usersLocations.length > 0 &&
+      usersLocations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p><p>Altitude: {loc.altitude}</p></div>)}
+      
+        
       </main>
     </Container>
     </div>
@@ -90,19 +117,3 @@ function App() {
 }
 
 export default App;
-
-/*
-var removeByAttr = function(arr, attr, value){
-  var i = arr.length;
-  while(i--){
-     if( arr[i] 
-         && arr[i].hasOwnProperty(attr) 
-         && (arguments.length > 2 && arr[i][attr] === value ) ){ 
-
-         arr.splice(i,1);
-
-     }
-  }
-  return arr;
-}
-*/
