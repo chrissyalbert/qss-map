@@ -8,6 +8,9 @@ body, html {
      background-size: cover;
   }
 
+  ul {
+    list-style: none;
+  }
 
 
 .App {
