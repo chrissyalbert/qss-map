@@ -10,7 +10,6 @@ export function Home (props) {
       <header className="masthead mb-auto">
         <div className="inner">
           <h3 className="masthead-brand text-light">Light the World</h3>
-         
         </div>
       </header>
       <main role="main" className="inner cover">
@@ -25,10 +24,11 @@ export function Home (props) {
       {props.isLoading ? 'Loading…' : 'Show Locations'}
       </Button>
       <Button variant="light" onClick={props.handleClearClick} >Clear Locations</Button>
-      {props.usersLocations.length > 0 && props.showLocations &&
-      props.usersLocations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p><p>Altitude: {loc.altitude}</p></div>)}
+      {props.usersLocations.locations.length > 0 && props.showLocations &&
+      props.usersLocations.locations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
       </main>
     </Container>
     </div>
   )
 } 
+// (props.usersLocations.length > 0 ) && && props.showLocations
