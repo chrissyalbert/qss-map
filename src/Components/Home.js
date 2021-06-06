@@ -1,6 +1,6 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container'
-import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
 
 export function Home (props) {
   props.getLocation()
@@ -24,11 +24,12 @@ export function Home (props) {
       {props.isLoading ? 'Loading…' : 'Show Locations'}
       </Button>
       <Button variant="light" onClick={props.handleClearClick} >Clear Locations</Button>
-      {props.usersLocations.locations.length > 0 && props.showLocations &&
-      props.usersLocations.locations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
+      { props.socketLocations.length > 0 && props.socketLocations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
       </main>
     </Container>
     </div>
   )
 } 
 // (props.usersLocations.length > 0 ) && && props.showLocations
+// {props.usersLocations.locations.length > 0 && props.showLocations &&
+//   props.usersLocations.locations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
