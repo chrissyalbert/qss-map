@@ -21,29 +21,6 @@ ioClient.on("connect", () => {
       ioClient.send("Hello!");
     });
 
-// same domain, port 3000
-// const socket = io();
-// From a different domain
-// In case your front is not served from the same domain as your 
-// server, you have to pass the URL of your server.
-// const socket = io("https://server-domain.com");
-// function connect () {
-//   socket.on("connect", () => {
-//     console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-//     console.log(socket.connected);
-//     socket.send("Hello!");
-//   });
-// }
-
-// socket.on("connect_error", () => {
-//   setTimeout(() => {
-//     socket.connect();
-//   }, 1000);
-// });
-// socket.on("disconnect", () => {
-//   console.log(socket.connected); // false
-// });
-
 function App() {
   function getLocation() {
     if (navigator.geolocation){
@@ -59,8 +36,8 @@ function App() {
     const { latitude, longitude} = coordinates
     console.log('latitude', latitude, 'longitude', longitude)
     const data = {
-      latitude: `${latitude}`,
-      longitude: `${longitude}`,
+      "latitude": `${latitude}`,
+      "longitude": `${longitude}`,
     }
     console.log('data:', data)
     // GeolocationCoordinates { latitude: 33.7227231111664, longitude: -111.9814122972247, altitude: 536.8526000976562, accuracy: 65, altitudeAccuracy: 10, heading: null, speed: null 
