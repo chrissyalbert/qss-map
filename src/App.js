@@ -1,77 +1,149 @@
-import React, { useState } from 'react';
-import {Map} from './Components/Map'
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import  io  from "socket.io-client";
+
+import { Map } from './Components/Map'
+import { Home } from './Components/Home'
+import { About } from './Components/About'
+// import { Locations } from './Components/Locations'
 import './App.css';
+import axios from 'axios'
 
-let usersLocationsArr = [ 
-  {id: 0, lat: 42.360081, long: -71.058884},
-  {id: 1, lat: 41.878113, long: -87.629799},
-  {id: 2, lat: 33.748997, long: -84.387985},
-  {id: 3, lat: 39.739235, long: -104.990250},
-  {id: 4, lat: 33.448376, long: -112.074036},
-  {id: 5, lat: 58.301945, long: -134.419724},
-  {id: 6, lat: 47.606209, long: -122.332069},
-  {id: 7, lat: 21.306944, long: -157.858337}
- ]
-
-function addLoc(id) {
-  if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let latitude = position.coords.latitude;
-      let longitude = position.coords.longitude;
-      usersLocationsArr.push({id, latitude, longitude});
+const ioClient = io("https://quiet-plateau-57365.herokuapp.com/");
+ioClient.on("connect", () => {
+      console.log(ioClient.id); // x8WIv7-mJelg7on_ALbx
     });
-  }
-}
-
-// function deleteLoc(value) {
-  // just change lat and long to null, keep id
-//   let i = usersLocations.length;
-//   while(i--){
-//     if(usersLocations[i] && (arguments.length > 2 && usersLocations[i][id] === value)) {
-//       usersLocations.splice(i,1);    
-//       }
-//   }
-// }
-
-function getLocation() {
-  if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(position) {
-      // let latitude = position.coords.latitude;
-      // let longitude = position.coords.longitude;
-      usersLocationsArr.push(position.coords);
-
-    });
-  }
-}
 
 function App() {
-  getLocation();
-  const [usersLocations, setUsersLocations] = useState(usersLocationsArr)
+  function getLocation() {
+    if (navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(position) {
+        ioClient.on("location", setSocketLocations(position.coords))
+        console.log('socketLocations', socketLocations)
+        postToMongoDBAtlas(position.coords)
+      });
+    }
+  }
+  
+  function postToMongoDBAtlas(coordinates) {
+    const { latitude, longitude} = coordinates
+    const data = {
+      "latitude": `${latitude}`,
+      "longitude": `${longitude}`,
+    }
+    // GeolocationCoordinates { latitude: 33.7227231111664, longitude: -111.9814122972247, altitude: 536.8526000976562, accuracy: 65, altitudeAccuracy: 10, heading: null, speed: null 
+    // };
+    axios({
+      method: 'post',
+      baseURL: 'https://quiet-plateau-57365.herokuapp.com/',
+      url: 'locations',
+      data,
+      headers: {
+        // "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      // The response comes here
+      console.log(response);
+      return response
+    })
+    .catch((error) => {
+      // Errors are reported there
+      console.log(error);
+    });
+  }
 
-// figure setUsersLocations Method
+  const [usersLocations, setUsersLocations] = useState([])
+  const [socketLocations, setSocketLocations] = useState([])
+  const getUsersLocations = () => {
+    return axios({
+      method: 'get',
+      baseURL: 'https://quiet-plateau-57365.herokuapp.com/',
+      url: 'locations',
+      headers: {
+        // "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      }
+    })
+    .then((response) => {
+      console.log(response)
+      setUsersLocations(response.data.locations)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+  const [isLoading, setLoading] = useState(false);
+  const [showLocations, setShowLocations] = useState(false);
+  useEffect(() => {
+    if (isLoading) {
+      getUsersLocations()
+      .then(() => {
+        setLoading(false);
+        setShowLocations(true);
+      });
+    } 
+  }, [isLoading]);
 
+  const handleLoadClick = () => setLoading(true);
+  const handleClearClick = () => setShowLocations(false);
+  const styles = { color: "white" };
   return (
-    <div className="App">
-      <Map />
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li >
+              <Link style={styles} to="/">Home</Link>
+            </li>
+            <li>
+              <Link style={styles} to="/about">About</Link>
+            </li>
+            <li>
+              <Link style={styles} to="/map">Map</Link>
+            </li>
+            {/* <li>
+              <Link to="/locationMap">See your friends' locations</Link>
+            </li> */}
+          </ul>
+        </nav>
 
-    </div>
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/map">
+            <Map />
+          </Route>
+          <Route path="/">
+            <Home 
+              getLocation={getLocation}
+              usersLocations={usersLocations}
+              handleLoadClick={handleLoadClick}
+              handleClearClick={handleClearClick}
+              isLoading={isLoading}
+              showLocations={showLocations}
+            />
+          </Route>
+          {/* <Route path="/locationMap">
+            <Locations 
+              socketLocations={socketLocations}
+            />
+          </Route> */}
+        </Switch>
+      </div>
+    </Router>
+    
+      
   );
 }
 
 export default App;
-
-/*
-var removeByAttr = function(arr, attr, value){
-  var i = arr.length;
-  while(i--){
-     if( arr[i] 
-         && arr[i].hasOwnProperty(attr) 
-         && (arguments.length > 2 && arr[i][attr] === value ) ){ 
-
-         arr.splice(i,1);
-
-     }
-  }
-  return arr;
-}
-*/
