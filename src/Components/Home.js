@@ -24,12 +24,14 @@ export function Home (props) {
       {props.isLoading ? 'Loading…' : 'Show Locations'}
       </Button>
       <Button variant="light" onClick={props.handleClearClick} >Clear Locations</Button>
-      { props.socketLocations.length > 0 && props.socketLocations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
+      <ul>
+      {props.usersLocations.length > 0 && props.showLocations &&
+  props.usersLocations.map(loc => <li key={loc._id}>Latitude: {loc.latitude}  Longitude: {loc.longitude}</li>)}
+  </ul>
       </main>
     </Container>
     </div>
   )
 } 
-// (props.usersLocations.length > 0 ) && && props.showLocations
-// {props.usersLocations.locations.length > 0 && props.showLocations &&
-//   props.usersLocations.locations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}
+
+// { props.socketLocations.length > 0 && props.socketLocations.map(loc => <div><p>Latitude: {loc.latitude}</p><p>Longitude: {loc.longitude}</p></div>)}

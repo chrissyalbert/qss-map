@@ -10,15 +10,13 @@ import  io  from "socket.io-client";
 import { Map } from './Components/Map'
 import { Home } from './Components/Home'
 import { About } from './Components/About'
-import { Locations } from './Components/Locations'
+// import { Locations } from './Components/Locations'
 import './App.css';
 import axios from 'axios'
 
-const ioClient = io("http://localhost:3001");
-// const ioClient = io();
+const ioClient = io("https://quiet-plateau-57365.herokuapp.com/");
 ioClient.on("connect", () => {
       console.log(ioClient.id); // x8WIv7-mJelg7on_ALbx
-      ioClient.send("Hello!");
     });
 
 function App() {
@@ -34,19 +32,16 @@ function App() {
   
   function postToMongoDBAtlas(coordinates) {
     const { latitude, longitude} = coordinates
-    console.log('latitude', latitude, 'longitude', longitude)
     const data = {
       "latitude": `${latitude}`,
       "longitude": `${longitude}`,
     }
-    console.log('data:', data)
     // GeolocationCoordinates { latitude: 33.7227231111664, longitude: -111.9814122972247, altitude: 536.8526000976562, accuracy: 65, altitudeAccuracy: 10, heading: null, speed: null 
     // };
     axios({
       method: 'post',
-      // https://desolate-oasis-74850.herokuapp.com/
-      baseURL: 'http://localhost:3001',
-      url: '/locations',
+      baseURL: 'https://quiet-plateau-57365.herokuapp.com/',
+      url: 'locations',
       data,
       headers: {
         // "Access-Control-Allow-Origin": "*",
@@ -66,31 +61,30 @@ function App() {
 
   const [usersLocations, setUsersLocations] = useState([])
   const [socketLocations, setSocketLocations] = useState([])
-  function getUsersLocations() {
-    axios({
+  const getUsersLocations = () => {
+    return axios({
       method: 'get',
-      // https://desolate-oasis-74850.herokuapp.com/
-      baseURL: 'http://localhost:3001',
-      url: '/locations',
+      baseURL: 'https://quiet-plateau-57365.herokuapp.com/',
+      url: 'locations',
       headers: {
         // "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       }
     })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      setUsersLocations(data)
+    .then((response) => {
+      console.log(response)
+      setUsersLocations(response.data.locations)
     })
     .catch((error) => {
       console.error(error);
     });
   }
   const [isLoading, setLoading] = useState(false);
-  const [showLocations, setShowLocations] = useState(false)
+  const [showLocations, setShowLocations] = useState(false);
   useEffect(() => {
     if (isLoading) {
-      getUsersLocations().then(() => {
+      getUsersLocations()
+      .then(() => {
         setLoading(false);
         setShowLocations(true);
       });
@@ -99,23 +93,24 @@ function App() {
 
   const handleLoadClick = () => setLoading(true);
   const handleClearClick = () => setShowLocations(false);
+  const styles = { color: "white" };
   return (
     <Router>
       <div>
         <nav>
           <ul>
-            <li>
-              <Link to="/">Home</Link>
+            <li >
+              <Link style={styles} to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link style={styles} to="/about">About</Link>
             </li>
             <li>
-              <Link to="/map">Map</Link>
+              <Link style={styles} to="/map">Map</Link>
             </li>
-            <li>
-              <Link to="/location">See your friends' locations</Link>
-            </li>
+            {/* <li>
+              <Link to="/locationMap">See your friends' locations</Link>
+            </li> */}
           </ul>
         </nav>
 
@@ -131,21 +126,18 @@ function App() {
           <Route path="/">
             <Home 
               getLocation={getLocation}
-              postToSheet={postToMongoDBAtlas}
-              getUsersLocations={getUsersLocations}
               usersLocations={usersLocations}
               handleLoadClick={handleLoadClick}
               handleClearClick={handleClearClick}
               isLoading={isLoading}
               showLocations={showLocations}
-              socketLocations={socketLocations}
             />
           </Route>
-          <Route path="/locationMap">
+          {/* <Route path="/locationMap">
             <Locations 
               socketLocations={socketLocations}
             />
-          </Route>
+          </Route> */}
         </Switch>
       </div>
     </Router>
