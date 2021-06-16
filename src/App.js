@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter,
   Switch,
   Route,
   Link
@@ -93,7 +93,7 @@ function App() {
   const handleClearClick = () => setShowLocations(false);
   const styles = { color: "white" };
   return (
-    <Router>
+    <HashRouter basename="/">
       <div>
         <nav>
           <ul>
@@ -138,7 +138,7 @@ function App() {
           </Route> */}
         </Switch>
       </div>
-    </Router>
+    </HashRouter >
     
       
   );
