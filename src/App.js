@@ -23,8 +23,6 @@ function App() {
   function getLocation() {
     if (navigator.geolocation){
       navigator.geolocation.getCurrentPosition(function(position) {
-        ioClient.on("location", setSocketLocations(position.coords))
-        console.log('socketLocations', socketLocations)
         postToMongoDBAtlas(position.coords)
       });
     }
@@ -60,7 +58,7 @@ function App() {
   }
 
   const [usersLocations, setUsersLocations] = useState([])
-  const [socketLocations, setSocketLocations] = useState([])
+
   const getUsersLocations = () => {
     return axios({
       method: 'get',
