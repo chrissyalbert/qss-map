@@ -121,7 +121,7 @@ function App() {
           <Route path="/map">
             <Map />
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <Home 
               getLocation={getLocation}
               usersLocations={usersLocations}
