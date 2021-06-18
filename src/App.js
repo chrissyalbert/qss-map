@@ -93,7 +93,7 @@ function App() {
   const handleClearClick = () => setShowLocations(false);
   const styles = { color: "white" };
   return (
-    <HashRouter basename="/">
+    <HashRouter basename={process.env.PUBLIC_URL}>
       <div>
         <nav>
           <ul>
