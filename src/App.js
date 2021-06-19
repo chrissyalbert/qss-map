@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  HashRouter,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
 import  io  from "socket.io-client";
 
-import { Map } from './Components/Map'
-import { Home } from './Components/Home'
-import { About } from './Components/About'
-// import { Locations } from './Components/Locations'
 import './App.css';
 import axios from 'axios'
 
@@ -42,7 +34,6 @@ function App() {
       url: 'locations',
       data,
       headers: {
-        // "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       },
     })
@@ -65,7 +56,6 @@ function App() {
       baseURL: 'https://quiet-plateau-57365.herokuapp.com/',
       url: 'locations',
       headers: {
-        // "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
       }
     })
@@ -91,56 +81,35 @@ function App() {
 
   const handleLoadClick = () => setLoading(true);
   const handleClearClick = () => setShowLocations(false);
-  const styles = { color: "white" };
-  return (
-    <HashRouter basename={process.env.PUBLIC_URL}>
-      <div>
-        <nav>
-          <ul>
-            <li >
-              <Link style={styles} to="/">Home</Link>
-            </li>
-            <li>
-              <Link style={styles} to="/about">About</Link>
-            </li>
-            <li>
-              <Link style={styles} to="/map">Map</Link>
-            </li>
-            {/* <li>
-              <Link to="/locationMap">See your friends' locations</Link>
-            </li> */}
-          </ul>
-        </nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/map">
-            <Map />
-          </Route>
-          <Route exact path="/">
-            <Home 
-              getLocation={getLocation}
-              usersLocations={usersLocations}
-              handleLoadClick={handleLoadClick}
-              handleClearClick={handleClearClick}
-              isLoading={isLoading}
-              showLocations={showLocations}
-            />
-          </Route>
-          {/* <Route path="/locationMap">
-            <Locations 
-              socketLocations={socketLocations}
-            />
-          </Route> */}
-        </Switch>
-      </div>
-    </HashRouter >
-    
-      
+  getLocation()
+  return (
+    <div className="landing" >
+      <Container className="App d-flex h-100 mx-auto flex-column">
+      <header className="masthead mb-auto">
+        <div className="inner">
+          <h3 className="masthead-brand text-light">Light the World</h3>
+        </div>
+      </header>
+      <main role="main" className="inner cover">
+        <h1 className="cover-heading">Unleash your Light</h1>
+        <p className="lead">Click "Allow Location Access" at the prompt from your browser so that your light can be seen by all our community.</p>
+        
+        <Button
+          variant="light"
+          disabled={isLoading}
+          onClick={!isLoading ? handleLoadClick : null}
+        >
+      {isLoading ? 'Loading…' : 'Show Locations'}
+      </Button>
+      <Button variant="light" onClick={handleClearClick} >Clear Locations</Button>
+      <ul>
+      {usersLocations.length > 0 && showLocations &&
+  usersLocations.map(loc => <li key={loc._id}>Latitude: {loc.latitude}  Longitude: {loc.longitude}</li>)}
+  </ul>
+      </main>
+    </Container>
+    </div>
   );
 }
 
