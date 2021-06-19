@@ -13,10 +13,11 @@ ioClient.on("connect", () => {
 
 function App() {
   function getLocation() {
-    if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(function(position) {
-        postToMongoDBAtlas(position.coords)
-      });
+    // if (navigator.geolocation){
+    //   navigator.geolocation.getCurrentPosition(function(position) {
+    //     postToMongoDBAtlas(position.coords)
+    //   });
+    console.log('in function getLocation()')
     }
   }
   
